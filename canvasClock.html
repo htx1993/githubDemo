@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			html,body{
+				margin:0;
+				padding:0;
+			}
+			#can {
+				display:block;
+				margin: 20px auto;
+				border: 1px dashed #999;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="can" width="1000" height="1000"></canvas>
+		
+		<script>
+			var dom = document.getElementById("can"),
+				can = dom.getContext("2d");
+			
+			//将左上角移到中心便于旋转
+			can.translate(250,250);
+			//保存画布的初始状态
+			can.save();
+			
+			//画刻度
+			function scale(){
+				
+				for(var i=0;i<60;i++){
+					can.beginPath();
+					can.save();
+					can.restore();
+					can.rotate(2/60*Math.PI);
+					can.strokeStyle = "#000";
+					can.lineCap = "round";
+					can.lineWidth = 3;
+					can.moveTo(0,150);
+					can.lineTo(0,160);
+					can.stroke();
+				}
+				
+				for(var i=0;i<12;i++){
+					can.beginPath();
+					can.save();
+					can.restore();
+					can.rotate(2/12*Math.PI);
+					can.lineCap = "round";
+					can.lineWidth = 5;
+					can.moveTo(0,145);
+					can.lineTo(0,160);
+					can.stroke();
+				}
+			}
+			
+			function planeClock(){
+				//画表盘
+				can.beginPath();
+				can.strokeStyle = "darkviolet";
+				can.lineWidth = 8;
+				can.arc(0,0,170,0,2*Math.PI);
+				can.closePath();
+				can.stroke();
+				
+			}
+			
+			//画时针
+			function hour(h,m,s){
+				can.beginPath();
+				can.restore();
+				can.save();
+				can.rotate(2/(12*60*60)*(h*60*60+m*60+s)*Math.PI);
+				can.lineCap = "round";
+				can.strokeStyle = "aqua";
+				can.lineWidth = 8;
+				can.moveTo(0,0);
+				can.lineTo(0,-70);
+				can.stroke();
+			}
+			
+			//画分针
+			function minute(m){
+				can.beginPath();
+				can.restore();
+				can.save();		
+				can.rotate(2/60*m*Math.PI);
+				can.strokeStyle = "brown";
+				can.lineWidth = 5;
+				can.moveTo(0,0);
+				can.lineTo(0,-110);
+				can.stroke();
+				
+			}
+			
+			//画秒针
+			function second(s,ms){
+				can.beginPath();
+				can.restore();
+				can.save();
+				can.rotate(2/60000*(s*1000+ms)*Math.PI);
+				can.strokeStyle = "crimson";
+				can.lineWidth = 2;
+				can.moveTo(0,0);
+				can.lineTo(0,-120);
+				can.stroke();
+				
+			}
+			
+			function clock(){
+				var date = new Date(),
+					h = date.getHours(),
+					m = date.getMinutes(),
+					s = date.getSeconds();
+					var ms = date.getMilliseconds();
+					can.clearRect(-250,-250,1000,1000);
+					can.restore();
+					can.save();
+					scale();
+					planeClock();
+					hour(h,m,s);
+					minute(m);
+					second(s,ms);
+			}
+			setInterval(clock,1);
+		</script>
+	</body>
+</html>
